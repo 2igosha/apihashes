@@ -14,8 +14,8 @@ import ghidra.util.Msg;
 
 public class ApiHashesScript extends GhidraScript {
 
-	@Override
-	public void run() throws Exception {
+    @Override
+    public void run() throws Exception {
         // Load the api name list and hash it
         File file = askFile("Please specify a file with API names", "Api Hashes");
         if ( file == null ) {
@@ -38,25 +38,25 @@ public class ApiHashesScript extends GhidraScript {
         fr.close();
 
         // Now search for all operands matching
-		Listing listing = currentProgram.getListing();
-		InstructionIterator iter = listing.getInstructions(currentProgram.getMemory(), true);
-		while (iter.hasNext() && !monitor.isCancelled()) {
-			Instruction ins = iter.next();
-			int numOps = ins.getNumOperands();
+        Listing listing = currentProgram.getListing();
+        InstructionIterator iter = listing.getInstructions(currentProgram.getMemory(), true);
+        while (iter.hasNext() && !monitor.isCancelled()) {
+            Instruction ins = iter.next();
+            int numOps = ins.getNumOperands();
             boolean found = false;
-			for (int i = 0; i < numOps && !found ; i++) {
-				if (ins.getOperandType(i) != (OperandType.SCALAR)) {
+            for (int i = 0; i < numOps && !found ; i++) {
+                if (ins.getOperandType(i) != (OperandType.SCALAR)) {
                     continue;
                 }
                 Integer hashValue = (int)ins.getScalar(i).getUnsignedValue();
                 String functionName = hashes.get(hashValue);
-				if ( functionName != null ) {
+                if ( functionName != null ) {
                     writer.printf("%s found API HASH %s\n", ins.getMinAddress(), functionName);
                     listing.setComment(ins.getMinAddress(), CodeUnit.EOL_COMMENT, functionName);
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
     private int HashAPI(String libName, String name){
         int result = 0;
